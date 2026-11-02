@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hoang Huy Green River - Vòng Quay May Mắn</title>
+  
+  <!-- Tailwind CSS & Font Awesome & Canvas Confetti -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=Montserrat:wght@300;400;500;600;700;800&family=Orbitron:wght@700;900&display=swap');
+
+    :root {
+      --teal-primary: #2E5E5B;
+      --teal-deep: #193D49;
+      --teal-darkest: #0e242c;
+      --gold-light: #E6D0C7;
+      --gold-mid: #C0AFA4;
+      --gold-dark: #A48574;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: radial-gradient(circle at 50% 20%, #2E5E5B 0%, #193D49 55%, #0b1c23 100%);
+      min-height: 100vh;
+      color: #fff;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    .font-brand {
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.15em;
+    }
+
+    .font-digital {
+      font-family: 'Orbitron', monospace;
+    }
+
+    .champagne-gradient-text {
+      background: linear-gradient(135deg, #ffffff 0%, #E6D0C7 35%, #C0AFA4 65%, #A48574 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.45));
+    }
+
+    .gold-btn {
+      background: linear-gradient(135deg, #E6D0C7 0%, #C0AFA4 45%, #A48574 100%);
+      color: #193D49;
+      box-shadow: 0 10px 25px -5px rgba(164, 133, 116, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .gold-btn:hover {
+      background: linear-gradient(135deg, #ffffff 0%, #E6D0C7 45%, #C0AFA4 100%);
+      box-shadow: 0 15px 35px 0px rgba(230, 208, 199, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+      transform: translateY(-2px);
+    }
+    .gold-btn:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    .spotlight-halo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(90vw, 900px);
+      height: 520px;
+      background: radial-gradient(ellipse at center, rgba(46, 94, 91, 0.75) 0%, rgba(25, 61, 73, 0.4) 50%, transparent 75%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .slot-stage-box {
+      background: linear-gradient(145deg, rgba(25, 61, 73, 0.88), rgba(14, 36, 44, 0.96));
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.75),
+                  0 0 50px rgba(192, 175, 164, 0.2),
+                  inset 0 1px 2px rgba(230, 208, 199, 0.35);
+      border-radius: 30px;
+      border: 2px solid rgba(230, 208, 199, 0.4);
+    }
+
+    .digit-drum {
+      position: relative;
+      height: 140px;
+      width: 95px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #09171d 0%, #13313b 25%, #244e5a 50%, #13313b 75%, #09171d 100%);
+      border-radius: 20px;
+      border: 2px solid rgba(192, 175, 164, 0.45);
+      box-shadow: inset 0 15px 28px rgba(0,0,0,0.9), 
+                  inset 0 -15px 28px rgba(0,0,0,0.9),
+                  0 8px 24px rgba(0,0,0,0.55);
+    }
+
+    @media (min-width: 640px) {
+      .digit-drum {
+        height: 195px;
+        width: 135px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .digit-drum {
+        height: 235px;
+        width: 165px;
+      }
+    }
+
+    .digit-drum::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      height: 48%;
+      border-top: 1px solid rgba(230, 208, 199, 0.45);
+      border-bottom: 1px solid rgba(230, 208, 199, 0.45);
+      background: linear-gradient(90deg, rgba(230, 208, 199, 0.03) 0%, rgba(230, 208, 199, 0.15) 50%, rgba(230, 208, 199, 0.03) 100%);
+      pointer-events: none;
+    }
+
+    .digit-reel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.1s cubic-bezier(0.12, 0.8, 0.2, 1);
+      will-change: transform;
+    }
+
+    .digit-item {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4.8rem;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 0 25px rgba(230, 208, 199, 0.65), 0 3px 6px rgba(0,0,0,0.85);
+    }
+
+    @media (min-width: 640px) {
+      .digit-item {
+        height: 195px;
+        font-size: 6.6rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .digit-item {
+        height: 235px;
+        font-size: 8.2rem;
+      }
+    }
+
+    /* Stealth Stealth Indicator: 1px dot for operator only */
+    .stealth-dot {
+      position: fixed;
+      bottom: 6px;
+      left: 6px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      opacity: 0.25;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      z-index: 40;
+    }
+    .stealth-dot:hover {
+      opacity: 0.9;
+      transform: scale(1.6);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #A48574;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(14, 36, 44, 0.6);
+    }
+  </style>
+</head>
+<body class="relative flex flex-col justify-between min-h-screen selection:bg-[#C0AFA4] selection:text-[#193D49]">
+  <div class="spotlight-halo"></div>
+
+  <!-- Stealth Status Indicator (Khán giả nhìn như điểm ảnh màn hình bình thường) -->
+  <div id="stealth-indicator" class="stealth-dot bg-emerald-500/50" onclick="triggerSecretAdmin()" title="Hệ thống"></div>
+
+  <!-- TOP HEADER -->
+  <header class="relative z-20 w-full px-4 sm:px-8 py-4 border-b border-[#C0AFA4]/20 backdrop-blur-md bg-[#193D49]/40 flex flex-wrap items-center justify-between gap-4">
+    
+    <!-- Brand Identity Logo & Name (Nhấp 3 lần để mở Admin bí mật) -->
+    <div id="brand-identity-block" class="flex items-center gap-3 sm:gap-5 group cursor-pointer" onclick="handleLogoClickCount()" title="Hoang Huy Green River">
+      <input type="file" id="logo-upload-input" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+      
+      <!-- Container Logo -->
+      <div id="brand-logo-container" class="relative flex items-center justify-center filter drop-shadow-[0_2px_12px_rgba(230,208,199,0.5)] transition group-hover:scale-105">
+        
+        <img id="custom-logo-img" src="" alt="Hoang Huy Green River Logo" class="hidden max-h-16 sm:max-h-20 max-w-[220px] object-contain">
+        
+        <!-- Vector Logo Hoang Huy Green River chuẩn xác -->
+        <div id="default-vector-logo" class="flex items-center gap-3.5">
+          <div class="w-12 h-14 sm:w-16 sm:h-20 flex-shrink-0">
+            <svg viewBox="0 0 200 240" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="hhMetallic" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ffffff"/>
+                  <stop offset="25%" stop-color="#E6D0C7"/>
+                  <stop offset="65%" stop-color="#C0AFA4"/>
+                  <stop offset="100%" stop-color="#A48574"/>
+                </linearGradient>
+              </defs>
+
+              <path d="M100 230 C76 205 32 170 30 92 C30 70 38 60 55 60 C78 60 88 82 100 82 C112 82 122 60 145 60 C162 60 170 70 170 92 C168 170 124 205 100 230 Z" 
+                    stroke="url(#hhMetallic)" stroke-width="7" stroke-linejoin="round" fill="rgba(25, 61, 73, 0.4)"/>
+              
+              <path d="M42 64 C25 64 16 46 26 30 C35 15 58 16 66 35 C70 45 65 60 52 62" 
+                    stroke="url(#hhMetallic)" stroke-width="7" stroke-linecap="round" fill="none"/>
+              <path d="M158 64 C175 64 184 46 174 30 C165 15 142 16 134 35 C130 45 135 60 148 62" 
+                    stroke="url(#hhMetallic)" stroke-width="7" stroke-linecap="round" fill="none"/>
+              <path d="M56 22 C78 22 92 38 100 48 C108 38 122 22 144 22" 
+                    stroke="url(#hhMetallic)" stroke-width="6" stroke-linecap="round" fill="none"/>
+
+              <path d="M100 68 C80 100 58 135 70 175 C78 200 95 212 100 216 C105 212 122 200 130 175 C142 135 120 100 100 68 Z" 
+                    stroke="url(#hhMetallic)" stroke-width="5" fill="none"/>
+              
+              <line x1="100" y1="80" x2="100" y2="205" stroke="url(#hhMetallic)" stroke-width="6" stroke-linecap="round"/>
+              <path d="M100 115 C112 120 122 135 124 150" stroke="url(#hhMetallic)" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M100 142 C112 147 120 160 121 172" stroke="url(#hhMetallic)" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M100 115 C88 120 78 135 76 150" stroke="url(#hhMetallic)" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M100 142 C88 147 80 160 79 172" stroke="url(#hhMetallic)" stroke-width="4.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <div class="flex flex-col">
+            <h1 class="font-brand text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-[0.22em] text-[#E6D0C7] uppercase leading-none drop-shadow">
+              HOANG HUY
+            </h1>
+            <p class="font-brand text-xs sm:text-sm font-semibold tracking-[0.42em] text-[#C0AFA4] uppercase mt-1.5 leading-none">
+              GREEN RIVER
+            </p>
+            <span class="text-[10px] sm:text-xs font-medium uppercase tracking-wider text-[#E6D0C7]/75 block mt-1">
+              Chương Trình Quay Số May Mắn
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Tools Bar -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Fullscreen Button -->
+      <button onclick="toggleFullscreen()" class="px-3 py-2 rounded-xl bg-[#193D49]/70 hover:bg-[#2E5E5B] border border-[#C0AFA4]/40 text-xs font-semibold text-[#E6D0C7] transition active:scale-95 flex items-center gap-1.5" title="Chế độ toàn màn hình LED">
+        <i class="fa-solid fa-expand text-[#E6D0C7]"></i>
+        <span class="hidden sm:inline">Màn hình LED</span>
+      </button>
+
+      <!-- Audio Toggle -->
+      <button onclick="toggleSound()" id="sound-btn" class="px-3 py-2 rounded-xl bg-[#193D49]/70 hover:bg-[#2E5E5B] border border-[#C0AFA4]/40 text-xs font-semibold text-[#E6D0C7] transition active:scale-95 flex items-center gap-1.5">
+        <i class="fa-solid fa-volume-high text-[#E6D0C7]" id="sound-icon"></i>
+        <span class="hidden sm:inline" id="sound-text">Âm thanh</span>
+      </button>
+
+      <!-- History Winners Drawer -->
+      <button onclick="openHistoryDrawer()" class="px-3 py-2 rounded-xl bg-[#2E5E5B]/80 hover:bg-[#2E5E5B] border border-[#E6D0C7]/50 text-xs font-bold text-[#E6D0C7] transition active:scale-95 flex items-center gap-2 shadow-md">
+        <i class="fa-solid fa-trophy text-[#E6D0C7]"></i>
+        <span>Đã Trúng</span>
+        <span id="winners-counter" class="bg-[#E6D0C7] text-[#193D49] font-black px-1.5 py-0.5 rounded-full text-[11px]">0</span>
+      </button>
+
+      <!-- Public Settings Button -->
+      <button onclick="openSettingsModal()" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-[#193D49]/70 hover:bg-[#2E5E5B] border border-[#C0AFA4]/40 text-[#E6D0C7] transition active:scale-95" title="Cài đặt">
+        <i class="fa-solid fa-gear text-sm"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN STAGE / WHEEL ARENA -->
+  <main class="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-6 max-w-6xl mx-auto w-full">
+    
+    <!-- Current Prize Badge -->
+    <div class="mb-5 sm:mb-7 text-center">
+      <div class="inline-flex items-center gap-2.5 px-6 py-2 rounded-full border border-[#E6D0C7]/50 bg-[#193D49]/80 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+        <i class="fa-solid fa-gem text-[#E6D0C7] animate-pulse"></i>
+        <span id="current-prize-display" class="font-brand text-sm sm:text-lg font-extrabold uppercase tracking-widest text-[#E6D0C7]">
+          GIẢI ĐẶC BIỆT
+        </span>
+      </div>
+      <p id="pool-status-label" class="text-xs text-[#C0AFA4] mt-2 font-medium tracking-wider">
+        Kho số: 999 mã vé (001 - 999) • 100% ngẫu nhiên minh bạch
+      </p>
+    </div>
+
+    <!-- 3-DIGIT DRUM SLOTS CONTAINER -->
+    <div class="slot-stage-box p-4 sm:p-8 flex items-center justify-center gap-3 sm:gap-6 shadow-2xl">
+      
+      <!-- Digit 1: Hàng Trăm -->
+      <div class="flex flex-col items-center">
+        <span class="text-[10px] sm:text-xs uppercase tracking-widest text-[#C0AFA4] font-semibold mb-2">Hàng Trăm</span>
+        <div class="digit-drum" id="drum-0">
+          <div class="digit-reel font-digital" id="reel-0"></div>
+        </div>
+      </div>
+
+      <!-- Digit 2: Hàng Chục -->
+      <div class="flex flex-col items-center">
+        <span class="text-[10px] sm:text-xs uppercase tracking-widest text-[#C0AFA4] font-semibold mb-2">Hàng Chục</span>
+        <div class="digit-drum" id="drum-1">
+          <div class="digit-reel font-digital" id="reel-1"></div>
+        </div>
+      </div>
+
+      <!-- Digit 3: Hàng Đơn Vị -->
+      <div class="flex flex-col items-center">
+        <span class="text-[10px] sm:text-xs uppercase tracking-widest text-[#C0AFA4] font-semibold mb-2">Đơn Vị</span>
+        <div class="digit-drum" id="drum-2">
+          <div class="digit-reel font-digital" id="reel-2"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CONTROL PANEL -->
+    <div class="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-4 w-full">
+      
+      <!-- Prize Select Dropdown -->
+      <div class="relative">
+        <select id="prize-select" onchange="onPrizeChange(this.value)" 
+          class="bg-[#193D49] text-[#E6D0C7] font-bold border border-[#C0AFA4]/50 px-4 py-3.5 rounded-2xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#E6D0C7] shadow-lg cursor-pointer">
+          <option value="Giải Đặc Biệt">👑 GIẢI ĐẶC BIỆT</option>
+          <option value="Giải Nhất">🥇 GIẢI NHẤT</option>
+          <option value="Giải Nhì">🥈 GIẢI NHÌ</option>
+          <option value="Giải Ba">🥉 GIẢI BA</option>
+          <option value="Giải Khuyến Khích">🎁 GIẢI KHUYẾN KHÍCH</option>
+          <option value="Giải Tri Ân Khách Hàng">✨ GIẢI TRI ÂN</option>
+        </select>
+      </div>
+
+      <!-- MAIN SPIN BUTTON -->
+      <button id="spin-btn" onclick="toggleSpin()" 
+        class="gold-btn group relative px-10 py-3.5 sm:px-14 sm:py-4 rounded-2xl font-black uppercase tracking-wider text-base sm:text-xl flex items-center gap-3">
+        <i class="fa-solid fa-play text-lg sm:text-xl group-hover:scale-125 transition-transform" id="spin-icon"></i>
+        <span id="spin-label" class="font-bold tracking-widest">BẮT ĐẦU QUAY</span>
+      </button>
+
+      <!-- Reset Single View Button -->
+      <button onclick="resetDrumView()" class="px-5 py-3.5 rounded-2xl bg-[#193D49]/80 hover:bg-[#2E5E5B] border border-[#C0AFA4]/40 text-[#E6D0C7] font-semibold text-xs sm:text-sm transition active:scale-95 flex items-center gap-2">
+        <i class="fa-solid fa-arrow-rotate-right"></i>
+        <span>Làm mới</span>
+      </button>
+    </div>
+
+    <!-- Quick Shortcuts & Hints -->
+    <div class="mt-5 flex flex-wrap items-center justify-center gap-4 text-[11px] sm:text-xs text-[#C0AFA4]/80">
+      <div class="flex items-center gap-1.5">
+        <kbd class="px-2 py-0.5 rounded bg-black/40 border border-[#C0AFA4]/30 text-[#E6D0C7] font-mono font-bold">Spacebar</kbd>
+        <span>Phím tắt quay</span>
+      </div>
+      <span>•</span>
+      <label class="flex items-center gap-2 cursor-pointer hover:text-white">
+        <input type="checkbox" id="no-duplicate-toggle" checked onchange="toggleNoDuplicate(this.checked)" class="w-4 h-4 rounded accent-[#C0AFA4]">
+        <span>Không lặp lại số đã trúng</span>
+      </label>
+      <span>•</span>
+      <div class="flex items-center gap-1.5">
+        <span>Thời gian quay:</span>
+        <select id="spin-speed" class="bg-black/50 border border-[#C0AFA4]/30 rounded-lg px-2 py-0.5 text-[#E6D0C7]">
+          <option value="3.5">3.5 Giây (Nhanh)</option>
+          <option value="5" selected>5.0 Giây (Chuẩn)</option>
+          <option value="7.5">7.5 Giây (Kịch tính)</option>
+        </select>
+      </div>
+    </div>
+  </main>
+
+  <!-- LUXURY FOOTER -->
+  <footer class="relative z-10 px-4 py-3 text-center border-t border-[#C0AFA4]/15 bg-[#193D49]/60 text-[11px] text-[#C0AFA4]/60">
+    <p class="font-medium tracking-wide">
+      HOANG HUY GREEN RIVER • KHÔNG GIAN SỐNG THỊNH VƯỢNG BÊN DÒNG SÔNG XANH
+    </p>
+  </footer>
+
+  <!-- WINNER CELEBRATION MODAL -->
+  <div id="winner-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
+    <div id="winner-card" class="relative w-full max-w-lg bg-gradient-to-b from-[#193D49] to-[#0e242c] border-2 border-[#E6D0C7] rounded-3xl p-6 sm:p-10 text-center shadow-[0_0_80px_rgba(230,208,199,0.35)] transform transition-all duration-300 scale-95 opacity-0">
+      
+      <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full border-2 border-[#E6D0C7] bg-[#193D49] flex items-center justify-center shadow-xl">
+        <i class="fa-solid fa-crown text-3xl text-[#E6D0C7] animate-bounce"></i>
+      </div>
+
+      <p class="font-brand text-xs sm:text-sm font-semibold tracking-widest text-[#C0AFA4] uppercase mt-6">
+        CHÚC MỪNG QUÝ KHÁCH HÀNG MAY MẮN
+      </p>
+      
+      <h3 id="modal-prize-name" class="font-brand text-2xl sm:text-3xl font-black champagne-gradient-text mt-2 uppercase">
+        GIẢI ĐẶC BIỆT
+      </h3>
+
+      <div class="my-6 flex items-center justify-center">
+        <div id="modal-winner-number" class="font-digital text-5xl sm:text-7xl font-black tracking-widest text-[#193D49] bg-gradient-to-r from-[#E6D0C7] via-[#ffffff] to-[#C0AFA4] px-8 py-3 rounded-2xl shadow-2xl border border-white">
+          000
+        </div>
+      </div>
+
+      <p class="text-xs text-[#C0AFA4]/80">Mã vé trúng thưởng đã được ghi nhận vào danh sách trao giải chính thức.</p>
+
+      <div class="mt-8 flex justify-center">
+        <button onclick="closeWinnerModal()" class="gold-btn px-8 py-3 rounded-xl font-bold text-sm tracking-wider uppercase shadow-lg">
+          TIẾP TỤC QUAY
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUBLIC CONFIGURATION MODAL -->
+  <div id="settings-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-[#193D49] border border-[#C0AFA4]/30 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl">
+      <div class="px-6 py-4 border-b border-[#C0AFA4]/20 flex items-center justify-between bg-[#0e242c]/50">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-[#E6D0C7]"></i>
+          <h3 class="font-bold text-base text-white">Cấu Hình Dải Số Quay Thưởng</h3>
+        </div>
+        <button onclick="closeSettingsModal()" class="text-[#C0AFA4] hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-[#C0AFA4] mb-1">Ảnh Logo Thương Hiệu:</label>
+          <div class="flex items-center gap-3">
+            <button onclick="document.getElementById('logo-upload-input').click()" class="px-3.5 py-2 rounded-xl bg-[#2E5E5B] hover:bg-[#2E5E5B]/80 text-[#E6D0C7] text-xs font-bold border border-[#C0AFA4]/40 flex items-center gap-1.5">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Tải ảnh logo mới
+            </button>
+            <button onclick="resetToDefaultLogo()" id="reset-logo-btn" class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs text-[#C0AFA4] hidden">
+              Dùng logo mặc định
+            </button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-[#C0AFA4] mb-1">Số bắt đầu (Min):</label>
+          <input type="number" id="config-min" value="1" min="0" class="w-full bg-[#0e242c] border border-[#C0AFA4]/40 rounded-xl px-3 py-2 text-white text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-[#C0AFA4] mb-1">Số kết thúc (Max):</label>
+          <input type="number" id="config-max" value="999" min="1" max="999" class="w-full bg-[#0e242c] border border-[#C0AFA4]/40 rounded-xl px-3 py-2 text-white text-sm">
+          <span class="text-[11px] text-[#C0AFA4]/70 mt-1 block">Tối đa 999 để hiển thị trọn vẹn 3 ô số (001 - 999).</span>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-[#C0AFA4]/20 bg-[#0e242c]/50 flex items-center justify-between">
+        <button onclick="resetAllWinnersConfirmation()" class="text-xs text-red-400 hover:text-red-300 font-semibold underline">
+          Xóa toàn bộ lịch sử
+        </button>
+        <div class="flex gap-2">
+          <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl bg-white/10 text-xs font-bold text-white">Hủy</button>
+          <button onclick="saveSettingsConfig()" class="gold-btn px-5 py-2 rounded-xl text-xs font-black uppercase">Lưu Cấu Hình</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WINNERS HISTORY DRAWER (OFF-CANVAS) -->
+  <div id="history-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-[#193D49]/95 backdrop-blur-2xl border-l border-[#C0AFA4]/30 z-50 transform translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+    <div class="p-5 border-b border-[#C0AFA4]/20 flex items-center justify-between bg-[#0e242c]/50">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-award text-[#E6D0C7] text-lg"></i>
+        <h3 class="font-brand font-bold text-white text-sm uppercase tracking-wider">Danh Sách Trúng Thưởng</h3>
+      </div>
+      <button onclick="closeHistoryDrawer()" class="text-[#C0AFA4] hover:text-white p-1">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <!-- Actions -->
+    <div class="p-3 bg-[#0e242c]/30 border-b border-[#C0AFA4]/20 flex items-center gap-2">
+      <button onclick="exportWinnersToCSV()" class="flex-1 py-2 px-3 rounded-xl bg-[#2E5E5B] hover:bg-[#2E5E5B]/80 border border-[#C0AFA4]/30 text-xs font-bold text-[#E6D0C7] flex items-center justify-center gap-1.5 transition">
+        <i class="fa-solid fa-file-excel"></i> Xuất Excel / CSV
+      </button>
+      <button onclick="window.print()" class="py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white flex items-center justify-center gap-1.5 transition">
+        <i class="fa-solid fa-print"></i> In
+      </button>
+    </div>
+
+    <!-- Content list -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-2.5" id="winners-items-container"></div>
+  </div>
+
+  <!-- =========================================================================
+       SECRET ADMIN AUTH MODAL (Mã PIN Bảo Mật)
+       ========================================================================= -->
+  <div id="admin-auth-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-[#0e242c] border-2 border-[#E6D0C7]/60 w-full max-w-sm rounded-3xl p-6 text-center shadow-[0_0_50px_rgba(0,0,0,0.9)]">
+      <div class="w-14 h-14 mx-auto rounded-full bg-[#193D49] border border-[#E6D0C7] flex items-center justify-center mb-3">
+        <i class="fa-solid fa-user-shield text-2xl text-[#E6D0C7]"></i>
+      </div>
+      <h3 class="font-brand text-lg font-bold text-white uppercase tracking-wider">Khu Vực Quản Trị Bí Mật</h3>
+      <p class="text-xs text-[#C0AFA4] mt-1">Vui lòng nhập mã PIN bảo mật để tiếp tục</p>
+      
+      <div class="my-5">
+        <input type="password" id="admin-pin-input" maxlength="8" placeholder="••••" 
+          class="w-full text-center text-3xl font-digital tracking-[0.4em] bg-black/60 border border-[#C0AFA4]/50 rounded-2xl py-3 text-[#E6D0C7] focus:outline-none focus:border-[#E6D0C7]"
+          onkeydown="if(event.key==='Enter') verifyAdminPin()">
+        <p id="pin-error-msg" class="text-xs text-rose-400 mt-2 hidden">Mã PIN không đúng. Vui lòng thử lại!</p>
+      </div>
+
+      <div class="flex gap-2.5">
+        <button onclick="closeAdminAuthModal()" class="flex-1 py-2.5 rounded-xl bg-white/10 text-xs font-bold text-white hover:bg-white/20">HỦY</button>
+        <button onclick="verifyAdminPin()" class="flex-1 gold-btn py-2.5 rounded-xl text-xs font-black uppercase tracking-wider">XÁC THỰC</button>
+      </div>
+      <p class="text-[10px] text-[#C0AFA4]/50 mt-4">Mặc định: 1234 (Có thể đổi trong bảng quản trị)</p>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       SECRET ADMIN CONTROL PANEL (Can thiệp số quay theo ý muốn)
+       ========================================================================= -->
+  <div id="admin-panel-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-gradient-to-b from-[#193D49] to-[#0a1a20] border-2 border-[#E6D0C7] w-full max-w-2xl rounded-3xl shadow-[0_0_70px_rgba(230,208,199,0.3)] my-8 overflow-hidden">
+      
+      <!-- Panel Header -->
+      <div class="px-6 py-4 border-b border-[#C0AFA4]/30 flex items-center justify-between bg-[#0e242c]/80">
+        <div class="flex items-center gap-2.5">
+          <span class="w-3 h-3 rounded-full bg-rose-500 animate-ping"></span>
+          <h3 class="font-brand font-black text-white text-base sm:text-lg tracking-wider uppercase">
+            Admin Secret Control • Can Thiệp Kết Quả
+          </h3>
+        </div>
+        <button onclick="closeAdminPanelModal()" class="text-[#C0AFA4] hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Panel Body -->
+      <div class="p-6 space-y-6 text-sm">
+        
+        <!-- MASTER RIGGING TOGGLE -->
+        <div class="p-4 rounded-2xl bg-black/40 border border-[#C0AFA4]/30 flex items-center justify-between">
+          <div>
+            <h4 class="font-bold text-white flex items-center gap-2">
+              <span>Chế độ Can Thiệp (Rigged Mode):</span>
+              <span id="rig-status-badge" class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">BẬT</span>
+            </h4>
+            <p class="text-xs text-[#C0AFA4]/80 mt-0.5">Nếu BẬT: Hệ thống sẽ ưu tiên các số bạn cài sẵn. Nếu TẮT: Quay ngẫu nhiên 100%.</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="admin-rig-master-switch" checked onchange="toggleRigMaster(this.checked)" class="sr-only peer">
+            <div class="w-14 h-8 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
+          </label>
+        </div>
+
+        <!-- STRATEGY TABS -->
+        <div class="space-y-4">
+          
+          <!-- OPTION 1: CAN THIỆP NGAY LƯỢT TIẾP THEO -->
+          <div class="p-4 rounded-2xl bg-[#0e242c]/80 border border-[#C0AFA4]/25 space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="font-bold text-[#E6D0C7] text-xs uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-bolt text-amber-400"></i>
+                1. Gài số cho LƯỢT QUAY TIẾP THEO (Next Spin Force):
+              </label>
+              <span class="text-[11px] text-amber-300 font-mono">Ưu tiên cao nhất</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <input type="number" id="admin-forced-next" min="1" max="999" placeholder="VD: 686 hoặc 88" 
+                class="flex-1 bg-black/60 border border-[#C0AFA4]/40 rounded-xl px-4 py-2.5 font-digital text-xl text-[#E6D0C7] tracking-widest focus:outline-none focus:border-[#E6D0C7]">
+              <button onclick="setNextForcedNumber()" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs uppercase">
+                Ghim số này
+              </button>
+              <button onclick="clearNextForcedNumber()" class="px-3 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs">
+                Xóa
+              </button>
+            </div>
+            <p id="next-forced-indicator" class="text-xs text-[#C0AFA4]/70 italic">
+              Hiện tại: <span class="text-white font-bold">Chưa đặt</span> (Sẽ dùng kịch bản giải hoặc ngẫu nhiên)
+            </p>
+          </div>
+
+          <!-- OPTION 2: GÀI SỐ THEO TỪNG GIẢI THƯỞNG -->
+          <div class="p-4 rounded-2xl bg-[#0e242c]/80 border border-[#C0AFA4]/25 space-y-3">
+            <label class="font-bold text-[#E6D0C7] text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-list-check text-[#E6D0C7]"></i>
+              2. Khóa số cố định theo TỪNG GIẢI THƯỞNG:
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div class="flex items-center justify-between bg-black/40 px-3 py-2 rounded-xl border border-white/5">
+                <span class="text-xs text-amber-300 font-bold">👑 Giải Đặc Biệt:</span>
+                <input type="number" id="prize-preset-dacbiet" min="1" max="999" placeholder="001-999" class="w-24 bg-black/60 border border-[#C0AFA4]/30 rounded-lg px-2 py-1 text-center font-digital text-[#E6D0C7]">
+              </div>
+              <div class="flex items-center justify-between bg-black/40 px-3 py-2 rounded-xl border border-white/5">
+                <span class="text-xs text-gray-200 font-bold">🥇 Giải Nhất:</span>
+                <input type="number" id="prize-preset-nhat" min="1" max="999" placeholder="001-999" class="w-24 bg-black/60 border border-[#C0AFA4]/30 rounded-lg px-2 py-1 text-center font-digital text-[#E6D0C7]">
+              </div>
+              <div class="flex items-center justify-between bg-black/40 px-3 py-2 rounded-xl border border-white/5">
+                <span class="text-xs text-gray-300 font-bold">🥈 Giải Nhì:</span>
+                <input type="number" id="prize-preset-nhi" min="1" max="999" placeholder="001-999" class="w-24 bg-black/60 border border-[#C0AFA4]/30 rounded-lg px-2 py-1 text-center font-digital text-[#E6D0C7]">
+              </div>
+              <div class="flex items-center justify-between bg-black/40 px-3 py-2 rounded-xl border border-white/5">
+                <span class="text-xs text-amber-600 font-bold">🥉 Giải Ba:</span>
+                <input type="number" id="prize-preset-ba" min="1" max="999" placeholder="001-999" class="w-24 bg-black/60 border border-[#C0AFA4]/30 rounded-lg px-2 py-1 text-center font-digital text-[#E6D0C7]">
+              </div>
+              <div class="flex items-center justify-between bg-black/40 px-3 py-2 rounded-xl border border-white/5 sm:col-span-2">
+                <span class="text-xs text-teal-300 font-bold">🎁 Giải Khuyến Khích / Tri Ân:</span>
+                <input type="number" id="prize-preset-khuyenkhich" min="1" max="999" placeholder="001-999" class="w-24 bg-black/60 border border-[#C0AFA4]/30 rounded-lg px-2 py-1 text-center font-digital text-[#E6D0C7]">
+              </div>
+            </div>
+            <p class="text-[11px] text-[#C0AFA4]/70">Khi MC chuyển sang giải nào, hệ thống sẽ tự động bắt đúng số đã cài cho giải đó (chỉ áp dụng 1 lần rồi xóa để tránh trùng).</p>
+          </div>
+
+          <!-- OPTION 3: DANH SÁCH KỊCH BẢN THỨ TỰ (QUEUE) -->
+          <div class="p-4 rounded-2xl bg-[#0e242c]/80 border border-[#C0AFA4]/25 space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="font-bold text-[#E6D0C7] text-xs uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-down-1-9 text-emerald-400"></i>
+                3. Hàng đợi số định sẵn theo thứ tự (Queue Script):
+              </label>
+              <span id="queue-count-badge" class="text-xs text-emerald-400 font-mono">0 số trong hàng đợi</span>
+            </div>
+            <textarea id="admin-queue-input" rows="2" placeholder="Nhập các số cách nhau bởi dấu phẩy hoặc khoảng trắng (Ví dụ: 088, 168, 686, 999...)"
+              class="w-full bg-black/60 border border-[#C0AFA4]/40 rounded-xl p-3 font-digital text-sm text-[#E6D0C7] tracking-wider focus:outline-none focus:border-[#E6D0C7]"></textarea>
+            <p class="text-[11px] text-[#C0AFA4]/70">Mỗi lần bấm quay, hệ thống sẽ lần lượt rút từng số từ trái sang phải trong hàng đợi này.</p>
+          </div>
+
+          <!-- OPTION 4: ĐỔI MÃ PIN QUẢN TRỊ -->
+          <div class="p-4 rounded-2xl bg-black/30 border border-white/10 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <span class="text-xs font-bold text-white block">Đổi mã PIN bảo mật Admin:</span>
+              <span class="text-[11px] text-[#C0AFA4]">Dùng khi bạn muốn đổi mật khẩu truy cập bảng này</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="password" id="new-pin-input" maxlength="8" placeholder="PIN mới" class="w-28 bg-black/60 border border-[#C0AFA4]/30 rounded-lg px-2 py-1 text-center font-digital text-white text-xs">
+              <button onclick="changeAdminPin()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-bold text-white">Đổi PIN</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Panel Footer -->
+      <div class="px-6 py-4 border-t border-[#C0AFA4]/30 bg-[#0e242c]/80 flex items-center justify-between">
+        <span class="text-xs text-[#C0AFA4]/60">Phím tắt nhanh: <kbd class="px-1.5 py-0.5 rounded bg-black/50 border border-white/10 text-white font-mono">Ctrl+Shift+A</kbd></span>
+        <div class="flex gap-2">
+          <button onclick="closeAdminPanelModal()" class="px-4 py-2 rounded-xl bg-white/10 text-xs font-bold text-white">ĐÓNG</button>
+          <button onclick="saveAdminSettings()" class="gold-btn px-6 py-2 rounded-xl text-xs font-black uppercase tracking-wider">LƯU CẤU HÌNH CAN THIỆP</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AUDIO & LOGIC SCRIPT ENGINE -->
+  <script>
+    /* =========================================================================
+       1. GLOBAL STATE & ADMIN RIGGING SYSTEM
+       ========================================================================= */
+    const state = {
+      min: 1,
+      max: 999,
+      noDuplicates: true,
+      currentPrize: 'Giải Đặc Biệt',
+      pool: [],
+      winners: [],
+      isSpinning: false,
+      soundEnabled: true,
+
+      // ADMIN CAN THIỆP (RIGGING) SYSTEM
+      admin: {
+        pin: '1234',
+        rigEnabled: true,          // Bật/tắt chế độ can thiệp
+        forcedNextNumber: null,     // Số gán cho lượt quay tiếp theo (ưu tiên số 1)
+        prizePresets: {            // Số gán theo từng giải
+          'Giải Đặc Biệt': null,
+          'Giải Nhất': null,
+          'Giải Nhì': null,
+          'Giải Ba': null,
+          'Giải Khuyến Khích': null,
+          'Giải Tri Ân Khách Hàng': null
+        },
+        scriptedQueue: []          // Danh sách hàng đợi định sẵn
+      }
+    };
+
+    let audioContext = null;
+    let logoClickCounter = 0;
+    let logoClickTimer = null;
+
+    window.onload = function() {
+      initAudio();
+      loadStoredState();
+      buildPool();
+      initSlotReels();
+      renderWinnersList();
+      updatePoolStatus();
+      updateStealthIndicator();
+
+      // Keyboard Shortcut 1: Space to spin
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && !state.isSpinning && !isAnyModalOpen()) {
+          e.preventDefault();
+          toggleSpin();
+        }
+      });
+
+      // Keyboard Shortcut 2: SECRET ADMIN HOTKEY (Ctrl + Shift + A hoặc Cmd + Shift + A)
+      window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+          e.preventDefault();
+          triggerSecretAdmin();
+        }
+      });
+    };
+
+    function isAnyModalOpen() {
+      const modals = ['winner-modal', 'settings-modal', 'admin-auth-modal', 'admin-panel-modal'];
+      return modals.some(id => {
+        const el = document.getElementById(id);
+        return el && el.classList.contains('flex');
+      });
+    }
+
+    /* =========================================================================
+       2. SECRET ADMIN AUTH & TRIGGER
+       ========================================================================= */
+    function handleLogoClickCount() {
+      logoClickCounter++;
+      clearTimeout(logoClickTimer);
+      if (logoClickCounter >= 3) {
+        logoClickCounter = 0;
+        triggerSecretAdmin();
+      } else {
+        logoClickTimer = setTimeout(() => {
+          logoClickCounter = 0;
+        }, 600);
+      }
+    }
+
+    function triggerSecretAdmin() {
+      const modal = document.getElementById('admin-auth-modal');
+      const pinInput = document.getElementById('admin-pin-input');
+      const err = document.getElementById('pin-error-msg');
+      err.classList.add('hidden');
+      pinInput.value = '';
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => pinInput.focus(), 50);
+    }
+
+    function closeAdminAuthModal() {
+      const modal = document.getElementById('admin-auth-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }
+
+    function verifyAdminPin() {
+      const input = document.getElementById('admin-pin-input').value.trim();
+      const err = document.getElementById('pin-error-msg');
+      if (input === state.admin.pin) {
+        closeAdminAuthModal();
+        openAdminPanelModal();
+      } else {
+        err.classList.remove('hidden');
+      }
+    }
+
+    function openAdminPanelModal() {
+      const modal = document.getElementById('admin-panel-modal');
+      // Populate fields
+      document.getElementById('admin-rig-master-switch').checked = state.admin.rigEnabled;
+      document.getElementById('admin-forced-next').value = state.admin.forcedNextNumber || '';
+      updateForcedNextDisplay();
+
+      // Populate prize presets
+      document.getElementById('prize-preset-dacbiet').value = state.admin.prizePresets['Giải Đặc Biệt'] || '';
+      document.getElementById('prize-preset-nhat').value = state.admin.prizePresets['Giải Nhất'] || '';
+      document.getElementById('prize-preset-nhi').value = state.admin.prizePresets['Giải Nhì'] || '';
+      document.getElementById('prize-preset-ba').value = state.admin.prizePresets['Giải Ba'] || '';
+      document.getElementById('prize-preset-khuyenkhich').value = state.admin.prizePresets['Giải Khuyến Khích'] || '';
+
+      // Populate queue
+      document.getElementById('admin-queue-input').value = state.admin.scriptedQueue.join(', ');
+      document.getElementById('queue-count-badge').innerText = `${state.admin.scriptedQueue.length} số trong hàng đợi`;
+
+      updateRigMasterUI(state.admin.rigEnabled);
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeAdminPanelModal() {
+      const modal = document.getElementById('admin-panel-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }
+
+    function toggleRigMaster(isEnabled) {
+      state.admin.rigEnabled = isEnabled;
+      updateRigMasterUI(isEnabled);
+      updateStealthIndicator();
+    }
+
+    function updateRigMasterUI(isEnabled) {
+      const badge = document.getElementById('rig-status-badge');
+      if (isEnabled) {
+        badge.className = 'text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono';
+        badge.innerText = 'ĐANG BẬT';
+      } else {
+        badge.className = 'text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-mono';
+        badge.innerText = 'ĐÃ TẮT (NGẪU NHIÊN 100%)';
+      }
+    }
+
+    function setNextForcedNumber() {
+      const val = parseInt(document.getElementById('admin-forced-next').value);
+      if (val >= state.min && val <= state.max) {
+        state.admin.forcedNextNumber = val.toString().padStart(3, '0');
+        updateForcedNextDisplay();
+        showToast(`Đã ghim số ${state.admin.forcedNextNumber} cho lượt quay kế tiếp!`);
+      } else {
+        showToast(`Số phải nằm trong khoảng từ ${state.min} đến ${state.max}!`);
+      }
+    }
+
+    function clearNextForcedNumber() {
+      state.admin.forcedNextNumber = null;
+      document.getElementById('admin-forced-next').value = '';
+      updateForcedNextDisplay();
+      showToast('Đã xóa số ghim!');
+    }
+
+    function updateForcedNextDisplay() {
+      const el = document.getElementById('next-forced-indicator');
+      if (state.admin.forcedNextNumber) {
+        el.innerHTML = `Hiện tại: <span class="text-amber-400 font-mono font-bold text-sm bg-black/60 px-2 py-0.5 rounded border border-amber-400/50">${state.admin.forcedNextNumber}</span> (Chắc chắn sẽ ra số này)`;
+      } else {
+        el.innerHTML = `Hiện tại: <span class="text-white font-bold">Chưa đặt</span> (Sẽ dùng giải hoặc ngẫu nhiên)`;
+      }
+    }
+
+    function changeAdminPin() {
+      const newPin = document.getElementById('new-pin-input').value.trim();
+      if (newPin.length >= 4) {
+        state.admin.pin = newPin;
+        saveState();
+        document.getElementById('new-pin-input').value = '';
+        showToast(`Đã đổi mã PIN Admin thành công sang: ${newPin}`);
+      } else {
+        showToast('Mã PIN mới phải có ít nhất 4 ký tự!');
+      }
+    }
+
+    function saveAdminSettings() {
+      // 1. Forced Next
+      const forcedVal = parseInt(document.getElementById('admin-forced-next').value);
+      state.admin.forcedNextNumber = (forcedVal >= state.min && forcedVal <= state.max) ? forcedVal.toString().padStart(3, '0') : null;
+
+      // 2. Prize Presets
+      const formatPrizeNum = (id) => {
+        const v = parseInt(document.getElementById(id).value);
+        return (v >= state.min && v <= state.max) ? v.toString().padStart(3, '0') : null;
+      };
+      state.admin.prizePresets['Giải Đặc Biệt'] = formatPrizeNum('prize-preset-dacbiet');
+      state.admin.prizePresets['Giải Nhất'] = formatPrizeNum('prize-preset-nhat');
+      state.admin.prizePresets['Giải Nhì'] = formatPrizeNum('prize-preset-nhi');
+      state.admin.prizePresets['Giải Ba'] = formatPrizeNum('prize-preset-ba');
+      state.admin.prizePresets['Giải Khuyến Khích'] = formatPrizeNum('prize-preset-khuyenkhich');
+
+      // 3. Queue Script
+      const rawQueue = document.getElementById('admin-queue-input').value;
+      const parsedQueue = rawQueue.split(/[,\s]+/)
+        .map(s => parseInt(s.trim()))
+        .filter(n => !isNaN(n) && n >= state.min && n <= state.max)
+        .map(n => n.toString().padStart(3, '0'));
+      state.admin.scriptedQueue = parsedQueue;
+
+      saveState();
+      updateStealthIndicator();
+      closeAdminPanelModal();
+      showToast('Đã lưu toàn bộ cấu hình can thiệp!');
+    }
+
+    // Stealth indicator at bottom left:
+    // Green = Rigged Active | Gray = Full Random
+    function updateStealthIndicator() {
+      const dot = document.getElementById('stealth-indicator');
+      if (state.admin.rigEnabled) {
+        dot.className = 'stealth-dot bg-emerald-500/60 shadow-[0_0_8px_rgba(16,185,129,0.8)]';
+      } else {
+        dot.className = 'stealth-dot bg-gray-500/30';
+      }
+    }
+
+    /* =========================================================================
+       3. WINNING NUMBER DETERMINATION (THE CORE RIGGING LOGIC)
+       ========================================================================= */
+    function getNextWinningNumber() {
+      // TRƯỜNG HỢP 1: Chế độ can thiệp ĐANG BẬT
+      if (state.admin.rigEnabled) {
+        
+        // 1. Ưu tiên cao nhất: Số gài trực tiếp cho lượt kế
+        if (state.admin.forcedNextNumber) {
+          const num = state.admin.forcedNextNumber;
+          state.admin.forcedNextNumber = null; // Dùng 1 lần rồi xóa
+          saveState();
+          return num;
+        }
+
+        // 2. Ưu tiên thứ 2: Khóa số theo Giải thưởng hiện tại
+        if (state.admin.prizePresets[state.currentPrize]) {
+          const num = state.admin.prizePresets[state.currentPrize];
+          state.admin.prizePresets[state.currentPrize] = null; // Dùng xong xóa để không trùng
+          saveState();
+          return num;
+        }
+
+        // 3. Ưu tiên thứ 3: Rút số tiếp theo từ hàng đợi (Queue)
+        if (state.admin.scriptedQueue.length > 0) {
+          const num = state.admin.scriptedQueue.shift(); // Lấy số đầu tiên
+          saveState();
+          return num;
+        }
+      }
+
+      // TRƯỜNG HỢP 2: Hoàn toàn ngẫu nhiên (hoặc khi các số cài sẵn đã dùng hết)
+      if (state.pool.length > 0) {
+        const randomIndex = Math.floor(Math.random() * state.pool.length);
+        return state.pool[randomIndex];
+      }
+
+      // Fallback nếu kho số rỗng
+      const fallback = Math.floor(Math.random() * (state.max - state.min + 1)) + state.min;
+      return fallback.toString().padStart(3, '0');
+    }
+
+    /* =========================================================================
+       4. WEB AUDIO SYNTHESIZER
+       ========================================================================= */
+    function initAudio() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        audioContext = new AudioCtx();
+      } catch(e) {
+        console.warn('Audio API unavailable');
+      }
+    }
+
+    function resumeAudio() {
+      if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }
+
+    function playTick() {
+      if (!state.soundEnabled || !audioContext) return;
+      resumeAudio();
+      try {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(520 + Math.random() * 260, audioContext.currentTime);
+        gain.gain.setValueAtTime(0.06, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.05);
+      } catch(e) {}
+    }
+
+    function playDrumStopSound() {
+      if (!state.soundEnabled || !audioContext) return;
+      resumeAudio();
+      try {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(320, audioContext.currentTime);
+        gain.gain.setValueAtTime(0.14, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.16);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.17);
+      } catch(e) {}
+    }
+
+    function playVictoryChimes() {
+      if (!state.soundEnabled || !audioContext) return;
+      resumeAudio();
+      const freqs = [523.25, 659.25, 783.99, 987.77, 1046.50];
+      freqs.forEach((f, idx) => {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, audioContext.currentTime + idx * 0.08);
+        gain.gain.setValueAtTime(0.16, audioContext.currentTime + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + idx * 0.08 + 0.65);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start(audioContext.currentTime + idx * 0.08);
+        osc.stop(audioContext.currentTime + idx * 0.08 + 0.7);
+      });
+    }
+
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      const icon = document.getElementById('sound-icon');
+      const text = document.getElementById('sound-text');
+      if (state.soundEnabled) {
+        icon.className = 'fa-solid fa-volume-high text-[#E6D0C7]';
+        text.innerText = 'Âm thanh';
+      } else {
+        icon.className = 'fa-solid fa-volume-xmark text-gray-400';
+        text.innerText = 'Tắt';
+      }
+    }
+
+    /* =========================================================================
+       5. DRUM REELS & SPIN ANIMATION
+       ========================================================================= */
+    function buildPool() {
+      const numbers = [];
+      for (let i = state.min; i <= state.max; i++) {
+        numbers.push(i.toString().padStart(3, '0'));
+      }
+
+      if (state.noDuplicates) {
+        const wonSet = new Set(state.winners.map(w => w.number));
+        state.pool = numbers.filter(n => !wonSet.has(n));
+      } else {
+        state.pool = [...numbers];
+      }
+      updatePoolStatus();
+    }
+
+    function updatePoolStatus() {
+      const label = document.getElementById('pool-status-label');
+      label.innerText = `Kho số: ${state.pool.length} mã vé khả dụng (${state.min.toString().padStart(3, '0')} - ${state.max.toString().padStart(3, '0')}) • Sẵn sàng`;
+    }
+
+    function initSlotReels() {
+      for (let reelIdx = 0; reelIdx < 3; reelIdx++) {
+        const reel = document.getElementById(`reel-${reelIdx}`);
+        reel.innerHTML = '';
+        for (let cycle = 0; cycle < 5; cycle++) {
+          for (let n = 0; n <= 9; n++) {
+            const digitEl = document.createElement('div');
+            digitEl.className = 'digit-item';
+            digitEl.innerText = n;
+            reel.appendChild(digitEl);
+          }
+        }
+        const defaultEl = document.createElement('div');
+        defaultEl.className = 'digit-item';
+        defaultEl.innerText = '0';
+        reel.appendChild(defaultEl);
+      }
+    }
+
+    function getDigitHeight() {
+      if (window.innerWidth >= 1024) return 235;
+      if (window.innerWidth >= 640) return 195;
+      return 140;
+    }
+
+    function resetDrumView() {
+      if (state.isSpinning) return;
+      for (let i = 0; i < 3; i++) {
+        const reel = document.getElementById(`reel-${i}`);
+        reel.style.transition = 'none';
+        reel.style.transform = 'translateY(0px)';
+      }
+    }
+
+    function toggleSpin() {
+      if (state.isSpinning) return;
+      if (state.pool.length === 0 && !state.admin.forcedNextNumber) {
+        showToast('Đã hết số khả dụng trong dải quay thưởng!');
+        return;
+      }
+      startSpin();
+    }
+
+    function startSpin() {
+      state.isSpinning = true;
+      resumeAudio();
+
+      const spinBtn = document.getElementById('spin-btn');
+      const spinIcon = document.getElementById('spin-icon');
+      const spinLabel = document.getElementById('spin-label');
+      spinBtn.classList.add('opacity-75', 'pointer-events-none');
+      spinIcon.className = 'fa-solid fa-spinner fa-spin text-xl';
+      spinLabel.innerText = 'ĐANG QUAY...';
+
+      // Quyết định số trúng (Can thiệp bí mật hoặc ngẫu nhiên)
+      const winningNumber = getNextWinningNumber();
+
+      const duration = parseFloat(document.getElementById('spin-speed').value) || 5.0;
+      const startTime = performance.now();
+      const totalMs = duration * 1000;
+      const digitH = getDigitHeight();
+
+      const tickInterval = setInterval(() => {
+        playTick();
+      }, 75);
+
+      const stopOffsets = [
+        totalMs * 0.70,
+        totalMs * 0.85,
+        totalMs * 1.00
+      ];
+      const stoppedReels = [false, false, false];
+
+      function animateReels(currentTime) {
+        const elapsed = currentTime - startTime;
+
+        for (let i = 0; i < 3; i++) {
+          const reel = document.getElementById(`reel-${i}`);
+          const targetDigit = parseInt(winningNumber[i]);
+
+          if (elapsed < stopOffsets[i]) {
+            const randomOffset = Math.floor(Math.random() * 40) * digitH;
+            reel.style.transform = `translateY(-${randomOffset}px)`;
+          } else if (!stoppedReels[i]) {
+            stoppedReels[i] = true;
+            playDrumStopSound();
+            const targetY = (30 + targetDigit) * digitH;
+            reel.style.transition = 'transform 0.65s cubic-bezier(0.15, 0.9, 0.25, 1)';
+            reel.style.transform = `translateY(-${targetY}px)`;
+          }
+        }
+
+        if (elapsed < totalMs + 200) {
+          requestAnimationFrame(animateReels);
+        } else {
+          clearInterval(tickInterval);
+          finishSpin(winningNumber);
+        }
+      }
+
+      requestAnimationFrame(animateReels);
+    }
+
+    function finishSpin(winnerNumber) {
+      state.isSpinning = false;
+      const spinBtn = document.getElementById('spin-btn');
+      const spinIcon = document.getElementById('spin-icon');
+      const spinLabel = document.getElementById('spin-label');
+      spinBtn.classList.remove('opacity-75', 'pointer-events-none');
+      spinIcon.className = 'fa-solid fa-play text-xl';
+      spinLabel.innerText = 'BẮT ĐẦU QUAY';
+
+      // Ghi nhận người trúng
+      const timeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      state.winners.unshift({
+        id: 'WIN-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+        prize: state.currentPrize,
+        number: winnerNumber,
+        time: timeStr
+      });
+
+      buildPool();
+      saveState();
+      renderWinnersList();
+
+      playVictoryChimes();
+      fireLuxuryConfetti();
+      showWinnerModal(winnerNumber);
+    }
+
+    /* =========================================================================
+       6. CELEBRATION & MODALS
+       ========================================================================= */
+    function fireLuxuryConfetti() {
+      if (typeof confetti === 'function') {
+        const colors = ['#E6D0C7', '#C0AFA4', '#A48574', '#ffffff'];
+        confetti({
+          particleCount: 80,
+          spread: 60,
+          origin: { y: 0.65 },
+          colors: colors
+        });
+        setTimeout(() => {
+          confetti({
+            particleCount: 60,
+            angle: 60,
+            spread: 75,
+            origin: { x: 0.1, y: 0.7 },
+            colors: colors
+          });
+          confetti({
+            particleCount: 60,
+            angle: 120,
+            spread: 75,
+            origin: { x: 0.9, y: 0.7 },
+            colors: colors
+          });
+        }, 300);
+      }
+    }
+
+    function showWinnerModal(numberStr) {
+      const modal = document.getElementById('winner-modal');
+      const card = document.getElementById('winner-card');
+      document.getElementById('modal-prize-name').innerText = state.currentPrize;
+      document.getElementById('modal-winner-number').innerText = numberStr;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => {
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+      }, 20);
+    }
+
+    function closeWinnerModal() {
+      const modal = document.getElementById('winner-modal');
+      const card = document.getElementById('winner-card');
+      card.classList.remove('scale-100', 'opacity-100');
+      card.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    /* =========================================================================
+       7. WINNERS LIST & EXPORT CSV
+       ========================================================================= */
+    function renderWinnersList() {
+      const container = document.getElementById('winners-items-container');
+      const countBadge = document.getElementById('winners-counter');
+      countBadge.innerText = state.winners.length;
+
+      if (state.winners.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-16 text-[#C0AFA4]/50">
+            <i class="fa-solid fa-gift text-4xl mb-3"></i>
+            <p class="text-xs">Chưa có mã vé trúng thưởng nào.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      state.winners.forEach((w, index) => {
+        const item = document.createElement('div');
+        item.className = 'p-3 bg-[#0e242c]/60 border border-[#C0AFA4]/25 rounded-2xl flex items-center justify-between hover:border-[#E6D0C7]/60 transition';
+        item.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-7 h-7 rounded-full bg-[#E6D0C7]/20 text-[#E6D0C7] border border-[#E6D0C7]/40 flex items-center justify-center font-bold text-xs">
+              ${state.winners.length - index}
+            </span>
+            <div>
+              <p class="text-[11px] font-bold text-[#C0AFA4] uppercase tracking-wider">${w.prize}</p>
+              <p class="font-digital text-2xl font-black text-[#E6D0C7] tracking-widest leading-none mt-0.5">${w.number}</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-[#C0AFA4]/60 block">${w.time}</span>
+            <button onclick="removeWinner('${w.id}')" class="text-[#C0AFA4]/50 hover:text-red-400 text-xs p-1 mt-1" title="Xóa">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function removeWinner(id) {
+      state.winners = state.winners.filter(w => w.id !== id);
+      buildPool();
+      saveState();
+      renderWinnersList();
+    }
+
+    function exportWinnersToCSV() {
+      if (state.winners.length === 0) {
+        showToast('Chưa có dữ liệu trúng thưởng để xuất file!');
+        return;
+      }
+
+      let csv = '\uFEFF';
+      csv += 'STT,Giải Thưởng,Mã Vé Trúng,Thời Gian\n';
+      state.winners.slice().reverse().forEach((w, i) => {
+        csv += `"${i + 1}","${w.prize}","${w.number}","${w.time}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Ket_Qua_HoangHuyGreenRiver_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function openHistoryDrawer() {
+      document.getElementById('history-drawer').classList.remove('translate-x-full');
+    }
+
+    function closeHistoryDrawer() {
+      document.getElementById('history-drawer').classList.add('translate-x-full');
+    }
+
+    /* =========================================================================
+       8. PUBLIC SETTINGS & LOGO
+       ========================================================================= */
+    function openSettingsModal() {
+      document.getElementById('config-min').value = state.min;
+      document.getElementById('config-max').value = state.max;
+      document.getElementById('settings-modal').classList.remove('hidden');
+      document.getElementById('settings-modal').classList.add('flex');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settings-modal').classList.remove('flex');
+      document.getElementById('settings-modal').classList.add('hidden');
+    }
+
+    function saveSettingsConfig() {
+      const minVal = parseInt(document.getElementById('config-min').value) || 1;
+      let maxVal = parseInt(document.getElementById('config-max').value) || 999;
+      if (maxVal > 999) maxVal = 999;
+
+      state.min = minVal;
+      state.max = maxVal;
+      buildPool();
+      saveState();
+      closeSettingsModal();
+      showToast('Đã lưu cấu hình dải số thành công!');
+    }
+
+    function resetAllWinnersConfirmation() {
+      if (confirm('Bạn có chắc chắn muốn xóa tất cả lịch sử quay thưởng của sự kiện?')) {
+        state.winners = [];
+        buildPool();
+        saveState();
+        renderWinnersList();
+        closeSettingsModal();
+      }
+    }
+
+    function onPrizeChange(val) {
+      state.currentPrize = val;
+      document.getElementById('current-prize-display').innerText = val;
+    }
+
+    function toggleNoDuplicate(isChecked) {
+      state.noDuplicates = isChecked;
+      buildPool();
+      saveState();
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.createElement('div');
+      toast.className = 'fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#193D49] text-[#E6D0C7] font-semibold text-xs sm:text-sm px-6 py-2.5 rounded-2xl shadow-2xl border border-[#C0AFA4]/50 flex items-center gap-2';
+      toast.innerHTML = `<i class="fa-solid fa-circle-info text-base"></i><span>${msg}</span>`;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 2600);
+    }
+
+    function handleLogoUpload(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const base64 = event.target.result;
+        applyCustomLogo(base64);
+        try {
+          localStorage.setItem('hh_custom_logo', base64);
+        } catch(err) {}
+        showToast('Đã tải và cập nhật logo Hoang Huy Green River!');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function applyCustomLogo(imgSrc) {
+      const img = document.getElementById('custom-logo-img');
+      const defaultSvg = document.getElementById('default-vector-logo');
+      const resetBtn = document.getElementById('reset-logo-btn');
+
+      if (imgSrc) {
+        img.src = imgSrc;
+        img.classList.remove('hidden');
+        defaultSvg.classList.add('hidden');
+        if (resetBtn) resetBtn.classList.remove('hidden');
+      } else {
+        img.src = '';
+        img.classList.add('hidden');
+        defaultSvg.classList.remove('hidden');
+        if (resetBtn) resetBtn.classList.add('hidden');
+      }
+    }
+
+    function resetToDefaultLogo() {
+      localStorage.removeItem('hh_custom_logo');
+      applyCustomLogo(null);
+      showToast('Đã khôi phục logo mặc định!');
+    }
+
+    /* =========================================================================
+       9. LOCAL STORAGE PERSISTENCE
+       ========================================================================= */
+    function saveState() {
+      try {
+        localStorage.setItem('hh_green_river_state', JSON.stringify({
+          min: state.min,
+          max: state.max,
+          noDuplicates: state.noDuplicates,
+          winners: state.winners,
+          admin: state.admin
+        }));
+      } catch(e) {}
+    }
+
+    function loadStoredState() {
+      try {
+        const savedLogo = localStorage.getItem('hh_custom_logo');
+        if (savedLogo) applyCustomLogo(savedLogo);
+
+        const raw = localStorage.getItem('hh_green_river_state');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.min !== undefined) state.min = parsed.min;
+          if (parsed.max !== undefined) state.max = parsed.max;
+          if (parsed.noDuplicates !== undefined) {
+            state.noDuplicates = parsed.noDuplicates;
+            document.getElementById('no-duplicate-toggle').checked = parsed.noDuplicates;
+          }
+          if (parsed.winners) state.winners = parsed.winners;
+          if (parsed.admin) {
+            state.admin = { ...state.admin, ...parsed.admin };
+          }
+        }
+      } catch(e) {}
+    }
+  </script>
+</body>
+</html>
